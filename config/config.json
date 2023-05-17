@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "tvbqnjbu",
+    "password": "cEw8E-hckG1UyjcOgK2jxQajiMWY6Vfk",
+    "database": "tvbqnjbu",
+    "host": "mahmud.db.elephantsql.com",
+    "dialect": "postgresql"
+  },
+  "test": {
+    "username": "tvbqnjbu",
+    "password": "cEw8E-hckG1UyjcOgK2jxQajiMWY6Vfk",
+    "database": "tvbqnjbu",
+    "host": "mahmud.db.elephantsql.com",
+    "dialect": "postgresql"
+  },
+  "production": {
+    "username": "tvbqnjbu",
+    "password": "cEw8E-hckG1UyjcOgK2jxQajiMWY6Vfk",
+    "database": "tvbqnjbu",
+    "host": "mahmud.db.elephantsql.com",
+    "dialect": "postgresql"
+  }
+}
