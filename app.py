@@ -2,10 +2,11 @@ from flask import Flask, redirect, render_template , flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Playlist, Song, PlaylistSong
 from forms import NewSongForPlaylistForm, SongForm, PlaylistForm
-# from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError
+from secret import username_password , host_ip_port
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://tvbqnjbu:cEw8E-hckG1UyjcOgK2jxQajiMWY6Vfk@mahmud.db.elephantsql.com/tvbqnjbu'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{username_password}@{host_ip_port}/tvbqnjbu'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = "I'LL NEVER TELL!!"
