@@ -1,0 +1,23 @@
+// Use this link to install pgAdmin4 only by command in UBUNTU then migration with the second link below
+https://www.commandprompt.com/education/how-to-install-pgadmin-on-ubuntu/#:~:text=To%20install%20pgAdmin%20on%20Ubuntu%2C%20add%20the%20public%20key%20using,in%20order%20to%20install%20pgAdmin.
+
+// Use this link to migration between your project to online db
+https://medium.com/@noogetz/how-to-setup-a-database-with-elephantsql-7d87ea9953d0
+
+// Install
+npm install -g sequelize-cli
+
+// Init db
+sequelize init
+
+// Check installed
+sequelize --version
+
+// Run first command
+sequelize db:migrate
+
+// Create model
+sequelize model:create --name users --attributes 'id:integer username:string email:string'
+
+// Migrate again to sync with online db
+sequelize db:migrate
