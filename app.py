@@ -2,7 +2,7 @@ import requests
 from flask import Flask, redirect, render_template , flash , g , session , request
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, USER 
-from forms import QRCodeForm , SignUpForm
+from forms import QRCodeForm , SignUpForm , LoginForm
 from sqlalchemy.exc import IntegrityError
 from secret import username_password , host_ip_port
 
@@ -79,17 +79,6 @@ def signup():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 @app.route("/")
 def root():
     """Homepage: redirect to /playlists."""
@@ -100,10 +89,37 @@ def root():
 @app.route('/login')
 def login():
     """Login Page"""
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = USER.authenticate(form.username.data,
+                                 form.password.data)
+        
+        if user:
+            do_login(user)
+            flash(f"Hello, {user.username}!", "success")
+            return redirect("/secret")
+
+        flash("Invalid credentials.", 'danger')
+
+    return render_template('users/login.html', form=form)
+
+@app.route('/secret')
+def secret():
+
+    return "<h1>Login OK</h1>"
+
+
+
+
+
+
+
+
+
+
 
     return render_template('login.html')
-
-
 
 
 @app.route('/generate_qrcode', methods=['GET', 'POST'])

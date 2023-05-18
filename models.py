@@ -22,7 +22,7 @@ class USER(db.Model):
     qrcodeRS = db.relationship("QRCODE", backref="userBR", cascade="all,delete")
 
     @classmethod
-    def register(cls , username , password , first_name , last_name , email):
+    def signup(cls , username , password , first_name , last_name , email):
         """Register a user, hashing their password."""
 
         hashed = bcrypt.generate_password_hash(password).decode('UTF-8')
