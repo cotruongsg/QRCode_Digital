@@ -12,8 +12,12 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <a class="navbar-brand" href="/">QR CODE GENERATE</a>
     <ul class="navbar-nav">
+      {% if not g.user %}
       <li class="nav-item"><a class="nav-link" href="/signup">Sign Up</a></li>
       <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+      {% else %}
+      <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+      {% endif %}
     </ul>
   </nav>
 
