@@ -86,7 +86,7 @@ def root():
     return redirect("/login")
 
 
-@app.route('/login')
+@app.route('/login' , methods=["GET", "POST"])
 def login():
     """Login Page"""
     form = LoginForm()
