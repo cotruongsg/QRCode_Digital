@@ -98,7 +98,7 @@ def login():
         if user:
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
-            return render_template("secret.html")
+            return render_template("user/secret.html")
 
         flash("Invalid credentials.", 'danger')
 
