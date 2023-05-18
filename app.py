@@ -98,16 +98,13 @@ def login():
         if user:
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
-            return redirect("/secret")
+            return render_template("secret.html")
 
         flash("Invalid credentials.", 'danger')
 
     return render_template('users/login.html', form=form)
 
-@app.route('/secret')
-def secret():
 
-    return "<h1>Login OK</h1>"
 
 
 
