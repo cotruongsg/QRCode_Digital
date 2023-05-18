@@ -52,7 +52,9 @@ def signup():
     If the there already is a user with that username: flash message
     and re-present form.
     """
-
+    if g.user:
+        return redirect("users/secret.html")
+    
     form = SignUpForm()
 
     if form.validate_on_submit():
@@ -82,13 +84,15 @@ def signup():
 @app.route("/")
 def root():
     """Homepage: redirect to /playlists."""
-
     return redirect("/login")
 
 
 @app.route('/login' , methods=["GET", "POST"])
 def login():
     """Login Page"""
+    if g.user:
+        return redirect("users/secret.html")
+
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -105,18 +109,14 @@ def login():
     return render_template('users/login.html', form=form)
 
 
+@app.route('/logout')
+def logout():
+    """Handle logout of user."""
 
+    do_logout()
+    flash("Goodbye!!!","success")
+    return redirect('/login')
 
-
-
-
-
-
-
-
-
-
-    return render_template('login.html')
 
 
 @app.route('/generate_qrcode', methods=['GET', 'POST'])
