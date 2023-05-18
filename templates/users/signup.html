@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<section class="h-100 h-custom" style="background-color: #8fc4b7;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-lg-8 col-xl-6">
+          <div class="card rounded-3">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/img3.webp"
+              class="w-100" style="border-top-left-radius: .3rem; border-top-right-radius: .3rem;"
+              alt="Sample photo">
+            <div class="card-body p-4 p-md-5">            
+  
+                <div class="row justify-content-md-center">
+                    <div class="col-md-7 col-lg-5">
+                      <h2 class="join-message">Registration Info</h2>
+                      <form method="POST" id="user_form">
+                        {{ form.hidden_tag() }}
+                  
+                        {% for field in form if field.widget.input_type != 'hidden' %}
+                          {% for error in field.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                          {% endfor %}
+                          {{ field(placeholder=field.label.text, class="form-control") }}
+                        {% endfor %}
+                  
+                        <button class="btn btn-success btn-lg mb-1">Sign me up!</button>
+                      </form>
+                    </div>
+                </div>     
+  
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% endblock %}
