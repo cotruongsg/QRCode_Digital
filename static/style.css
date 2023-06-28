@@ -1,0 +1,119 @@
+
+
+#neubar {
+background: #fae8d2;
+box-shadow: 4px 6px 12px rgba(0,0,0,0.4);
+padding: 0 0 3px 0;
+}
+
+.nav-item .active {
+border-radius: 6px;
+background: linear-gradient(145deg, #ffe7ca, #f5d7b2);
+box-shadow:  4px 4px 8px #ddc1a0,
+                -4px -4px 8px #f7e5cc;
+}
+#neubar .dropdown-menu a:hover {
+color: #454545
+}
+#neubar .nav-item {
+margin : auto 4px;
+}
+#neubar a {
+
+padding-left:12px;
+padding-right:12px;
+}
+#neubar .dropdown-menu {
+background : #545454
+}
+a.navbar-brand {
+color: #454545
+}
+
+/* .image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .image-container img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  } */
+
+.image-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-container img {
+  max-width: 100%;
+  max-height: 100%;
+}
+  
+#signUpform {
+/* fallback for old browsers */
+background: #84fab0;
+
+/* Chrome 10-25, Safari 5.1-6 */
+/* background: -webkit-linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5)); */
+
+/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+background: linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5));
+background-repeat: no-repeat;
+background-size: cover;
+}
+
+#Loginform {
+
+/* background: #84fab0;
+background: linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5)); */
+background-repeat: no-repeat;
+background-size: 100% 100%; 
+/* margin: 0;
+padding: 0;  */
+
+}
+
+/* 
+@media (max-width:480px){
+  body #Loginform {
+    background-image: url('../static/Login_background_onPhone.png');
+    background-size: cover;
+    background-position: left;
+  }
+} */
+
+#background-video {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  object-fit: cover;
+  /* background-size: 100% 100%; 
+  background-repeat: no-repeat; */
+}
+
+.full-width-section {
+  position: relative;
+  z-index: 1;
+}
+
+#registerBtn {
+  margin-top: 10px;
+}
+
+/* .full-width-section {
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+} */

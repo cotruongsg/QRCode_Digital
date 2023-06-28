@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- <body id="signUpform" style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">" -->
+<body id="signUpform" style="background-image: url('../static/CreateQRForm_background.png');">  
+  <section class="vh-100 bg-image full-width-section">
+
+    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+      <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+            <div class="card" style="border-radius: 15px;">
+              <div class="card-body p-5">
+                <h2 class="text-uppercase text-center mb-5">QR Code Selection</h2>
+
+                <form method="POST">
+
+                  {{ form.hidden_tag() }}
+
+                  {% for field in form if field.widget.input_type != 'hidden' %}
+                    <div class="form-group">
+                      <label for="{{ field.id }}" style="font-weight: bold;">{{ field.label.text }}</label>
+                      <div>
+                        {% for field in form.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.errors[field] %}
+                                <span>          
+                                    {{ error }}       
+                                </span>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        {{ field(class="form-control", placeholder=field.label.text) }}
+                      </div>
+                    </div>
+                  {% endfor %}
+
+                  <div class="d-flex justify-content-center">
+                    <button class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" id="registerBtn">Create QR Code</button>
+                  </div>
+
+
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
+{% endblock %}

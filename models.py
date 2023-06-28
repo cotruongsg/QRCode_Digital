@@ -2,6 +2,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from datetime import datetime
+from sqlalchemy.dialects import postgresql
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -11,28 +12,24 @@ class USER(db.Model):
     
     __tablename__ = 'usersTB'
     id = db.Column(db.Integer,primary_key=True)
-    username = db.Column(db.String(50),nullable=False,unique=True)
+    username = db.Column(db.String(20),nullable=False,unique=True)
     password = db.Column(db.Text, nullable=False)
-    email = db.Column(db.String(100), nullable=False)
-    first_name = db.Column(db.String(30), nullable=False)
-    last_name = db.Column(db.String(30), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    email = db.Column(db.String(100), nullable=False)   
+    # created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     qrcodeRS = db.relationship("QRCODE", backref="userBR", cascade="all,delete")
 
     @classmethod
-    def signup(cls , username , password , first_name , last_name , email):
+    def signup(cls , username , email ,  password):
         """Register a user, hashing their password."""
 
         hashed = bcrypt.generate_password_hash(password).decode('UTF-8')
        
         user = cls(
-            username = username,
-            password = hashed,
-            email = email ,
-            first_name = first_name , 
-            last_name = last_name,
+            username = username,            
+            email = email , 
+            password = hashed ,         
         )
         db.session.add(user)
         return user
@@ -50,6 +47,24 @@ class USER(db.Model):
         else:
             return False
     
+
+
+############################## Options Table ###################################
+# class OutLine(db.Model):
+#     """Create db to give choices to make QR Code how looks based on user select"""
+#     __tablename__ = 'qrCodeOptionsTB'
+
+#     id = db.Column(db.Integer, primary_key=True)
+#     module_shape = db.Column(db.String(50))
+#     module_color = db.Column(postgresql.ARRAY(db.String(7)))
+#     inner_eye_shape = db.Column(postgresql.ARRAY(db.String(200)))
+#     inner_eye_color = db.Column(postgresql.ARRAY(db.String(500)))
+#     outer_eye_shape = db.Column(postgresql.ARRAY(db.String(200)))
+#     outer_eye_color = db.Column(postgresql.ARRAY(db.String(500)))
+#     image = db.Column(db.LargeBinary , nullable=True)
+
+
+
 ############################## QR Code Table ###################################
 class QRCODE(db.Model):
     """An individual QR Code"""
@@ -61,10 +76,12 @@ class QRCODE(db.Model):
         primary_key=True,
     )
 
-    text = db.Column(
+    description = db.Column(
         db.String(140),
         nullable=False,
     )
+
+    image = db.Column(db.LargeBinary)
 
     timestamp = db.Column(
         db.DateTime,
@@ -81,10 +98,6 @@ class QRCODE(db.Model):
     user = db.relationship('USER')
 
 
-
-
-
-
 ############################# CREATE TABLES #######################################
 # DO NOT MODIFY THIS FUNCTION
 def connect_db(app):
@@ -93,6 +106,80 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+    # colors = ["#841839","#77352E","#D4134A",
+    #       "#F0550A","#008000","#1C7137",
+    #       "#4E9A69","#489EAB","#197CB3",
+    #       "#003153","#000000","#1877F2",
+    #       "#5133BC","#311C46","#5C366F","#D169B5"]
+
+    # inner_eye_shape = ["circle","cushion","default",
+    #                 "diamond","dots","heavyround",
+    #                 "horizontal_lines","shield","star",
+    #                 "vertical_lines"]
+
+    # outer_eye_shape = ["circle","diamond","dots",
+    #                 "heavyround","horizontal_lines","leaf",
+    #                 "shield","left_eye","vertical_lines",
+    #                 "lightround"]
+
+
+    # QROutLine = [
+    #     OutLine(
+    #         module_shape = "heart", 
+    #         module_color = colors , 
+    #         inner_eye_shape = inner_eye_shape , 
+    #         inner_eye_color = colors ,
+    #         outer_eye_shape = outer_eye_shape , 
+    #         outer_eye_color = colors,
+    #     ),
+    #     OutLine(
+    #         module_shape = "horizontal_lines", 
+    #         module_color = colors , 
+    #         inner_eye_shape = inner_eye_shape , 
+    #         inner_eye_color = colors ,
+    #         outer_eye_shape = outer_eye_shape , 
+    #         outer_eye_color = colors,
+    #     ),
+    #     OutLine(
+    #         module_shape = "lightround", 
+    #         module_color = colors , 
+    #         inner_eye_shape = inner_eye_shape , 
+    #         inner_eye_color = colors ,
+    #         outer_eye_shape = outer_eye_shape , 
+    #         outer_eye_color = colors,
+    #     ),
+    #     OutLine(
+    #         module_shape = "classic", 
+    #         module_color = colors , 
+    #         inner_eye_shape = inner_eye_shape , 
+    #         inner_eye_color = colors ,
+    #         outer_eye_shape = outer_eye_shape , 
+    #         outer_eye_color = colors,
+    #     ),
+    #     OutLine(
+    #         module_shape = "circle", 
+    #         module_color = colors , 
+    #         inner_eye_shape = inner_eye_shape , 
+    #         inner_eye_color = colors ,
+    #         outer_eye_shape = outer_eye_shape , 
+    #         outer_eye_color = colors,
+    #     ),
+    #     OutLine(
+    #         module_shape = "vertical_lines", 
+    #         module_color = colors , 
+    #         inner_eye_shape = inner_eye_shape , 
+    #         inner_eye_color = colors ,
+    #         outer_eye_shape = outer_eye_shape , 
+    #         outer_eye_color = colors,
+    #     ),
+    # ]
+
+
     # Create tables
     with app.app_context():        
         db.create_all()
+        
+        # Check if QROutLine records exist
+        # if not OutLine.query.all():
+            # db.session.add_all(QROutLine)
+            # db.session.commit()

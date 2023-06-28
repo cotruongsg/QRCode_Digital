@@ -1,26 +1,50 @@
 {% extends 'base.html' %}
 
-{% block body_class %}onboarding{% endblock %}
-
 {% block content %}
 
-  <div class="row justify-content-md-center">
-    <div class="col-md-7 col-lg-5">
-      <h2 class="join-message">Welcome back.</h2>
+<body id="Loginform">
+  <video id="background-video" autoplay loop muted>
+    <source src="../static/QR_Design.mp4" type="video/mp4">
+  </video>
+    <section class="vh-100 bg-image full-width-section">
+      <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+        <div class="container h-100">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+              <div class="card" style="border-radius: 15px;">
+                <div class="card-body p-5">
+                  <h2 class="text-uppercase text-center mb-5">Welcome back</h2>
+                  <form method="POST">
+                    {{ form.hidden_tag() }}
+                    {% for field in form if field.widget.input_type != 'hidden' %}
+                      <div class="form-group">
+                        <label for="{{ field.id }}">{{ field.label.text }}</label>
+                        <div>
+                          {% for field in form.errors %}
+                            <div class="alert alert-danger">
+                              {% for error in form.errors[field] %}
+                                <span>{{ error }}</span>
+                              {% endfor %}
+                            </div>
+                          {% endfor %}
+                          {{ field(class="form-control", placeholder=field.label.text) }}
+                        </div>
+                      </div>
+                    {% endfor %}
+                    <div class="d-flex justify-content-center">
+                      <button class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" id="registerBtn">Login</button>
+                    </div>
+                    <p class="text-center text-muted mt-5 mb-0">No Account? <a href="/signup" class="fw-bold text-body"><u>Sign Up here</u></a></p>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+</body>
 
-      <form method="POST" id="user_form">
-        {{ form.hidden_tag() }}
-
-        {% for field in form if field.widget.input_type != 'hidden' %}
-          {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
-          {% endfor %}
-          {{ field(placeholder=field.label.text, class="form-control") }}
-        {% endfor %}
-
-        <button class="btn btn-primary btn-block btn-lg">Log in</button>
-      </form>
-    </div>
-  </div>
 
 {% endblock %}

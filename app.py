@@ -1,10 +1,16 @@
 import requests
-from flask import Flask, redirect, render_template , flash , g , session , request
+from flask import Flask, redirect, render_template , flash , g , session , request , url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, USER 
-from forms import QRCodeForm , SignUpForm , LoginForm
+from forms import QRCodeForm , SignUpForm , LoginForm 
 from sqlalchemy.exc import IntegrityError
 from secret import username_password , host_ip_port
+import base64
+from io import BytesIO
+from PIL import Image
+# import cairosvg
+
+
 
 CURR_USER_KEY = "curr_user"
 
@@ -14,8 +20,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = "I'LL NEVER TELL!!"
 
+
+
 connect_db(app)
 
+################################ Initial Request ##################################
 @app.before_request
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
@@ -25,7 +34,7 @@ def add_user_to_g():
     In Flask, a context is defined as the lifetime of a request, which starts when a request is received and ends when a response is sent back to the client.
     """
     if CURR_USER_KEY in session:
-        g.user = USER.query.get(session[CURR_USER_KEY])
+        g.user = USER.query.get(session[CURR_USER_KEY])       
     else:
         g.user = None
 
@@ -40,7 +49,7 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
-
+################################### SIGN UP ##############################################################
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
     """Handle user signup.
@@ -52,102 +61,193 @@ def signup():
     If the there already is a user with that username: flash message
     and re-present form.
     """
-    if g.user:
-        return redirect("users/secret.html")
+    active_page = 'signup'    
+    if CURR_USER_KEY in session:
+        return redirect("generate_qrcode")
     
     form = SignUpForm()
 
     if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data       
+        email = form.email.data
+
+        user = USER.signup( username, email , password)                                
+           
         try:
-            user = USER.signup(
-                username=form.username.data,
-                password=form.password.data,
-                email=form.email.data,
-                first_name=form.first_name.data,
-                last_name=form.last_name.data                
-            )
+            
             db.session.commit()
+            do_login(user)
 
         except IntegrityError:
-            flash("Username already taken", 'danger')
+            flash("Username already taken . Please choose another username", 'danger')
             return render_template('users/signup.html', form=form)
 
-        do_login(user)
+        
 
-        return redirect("/")
+        return redirect("generate_qrcode")
 
     else:
-        return render_template('users/signup.html', form=form)
+        return render_template('users/signup.html', form=form ,  active_page=active_page)
 
-
-
+################################## HOMEPAGE ##############################################################
 @app.route("/")
 def root():
-    """Homepage: redirect to /playlists."""
-    return redirect("/login")
+    """Homepage: redirect to homepage."""
+    active_page = 'home'
+    return render_template('home.html', active_page=active_page)
 
-
+################################ LOGIN & LOGOUT ##########################################################
 @app.route('/login' , methods=["GET", "POST"])
 def login():
-    """Login Page"""
-    if g.user:
-        return redirect("users/secret.html")
+    if CURR_USER_KEY in session:
+        return redirect("generate_qrcode")
 
+    """Login Page"""
+    active_page = 'login' 
     form = LoginForm()
 
     if form.validate_on_submit():
         user = USER.authenticate(form.username.data,
-                                 form.password.data)
+                                form.password.data)
         
         if user:
             do_login(user)
-            flash(f"Hello, {user.username}!", "success")
-            return render_template("users/secret.html")
+            flash(f"Welcome, {user.username}! . Please create your own QR code", "success")
+            return redirect("/generate_qrcode")
 
         flash("Invalid credentials.", 'danger')
 
-    return render_template('users/login.html', form=form)
+    return render_template('users/login.html', form=form , active_page=active_page)
 
-
+# LOGOUT
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
+    if CURR_USER_KEY not in session:
+        flash("Please login first!", "danger")
+        return redirect('/login')
 
     do_logout()
     flash("Goodbye!!!","success")
-    return redirect('/login')
+    return redirect('/')
 
-
-
+############################### GENERATE QR CODE #########################################################
 @app.route('/generate_qrcode', methods=['GET', 'POST'])
 def generate_qrcode():
+    if CURR_USER_KEY not in session:
+        flash("Please login first!", "danger")
+        return redirect('/login')
+    
+    
     form = QRCodeForm()
 
     if request.method == 'POST' and form.validate_on_submit():
-        url = "https://qrcode-monkey.p.rapidapi.com/qr/custom"
+        url = "https://qrcode3.p.rapidapi.com/qrcode/text"
         headers = {
-            "X-RapidAPI-Key": "YOUR_RAPIDAPI_KEY",
-            "Content-Type": "application/json"
+            "Accept": "image/svg+xml",
+            "Content-Type": "application/json",
+            "X-RapidAPI-Key": "0661f8c2acmsh9bdd2554608a245p19594fjsn7693a33cdc38",
+            "X-RapidAPI-Host": "qrcode3.p.rapidapi.com"            
         }
 
+        # image_url = url_for('static', filename='Logo.png', _external=True)
+
         data = {
-            'data': form.data.data,
-            'config': {
-                'body': form.body.data,
-                'logo': form.logo.data
+            "data": form.data.data,
+            "style": {
+                "background": {
+                "color": "#FFFFFF"
+                },
+                "module": {
+                    "shape": form.module_shape.data,
+                    "color": form.module_color.data
+                },
+                "inner_eye": {
+                    "shape": form.inner_eye_shape.data,
+                    "color": form.inner_eye_color.data
+                },
+                "outer_eye": {
+                    "shape": form.outer_eye_shape.data,
+                    "color": form.outer_eye_color.data
+                }
             },
-            'size': form.size.data,
-            'download': form.download.data,
-            'file': form.file.data
+            "image": {
+                "uri": "icon://bitcoin"
+                # "url": form.image
+            },
+            "output": {
+                "filename": "qrcode",
+                "format": "png"
+            },
+            "size": {
+                "width": 300,
+                "quiet_zone": 4,
+                "error_correction": "M"
+            },
         }
 
         response = requests.post(url, json=data, headers=headers)
-        if response.ok:
-            return jsonify(response.json())
-        else:
-            return jsonify({"message": "Error occurred during QR code generation"})
+        
+        if response.ok:  
+            image_data = response.content           
+            
+            encoded_image = base64.b64encode(image_data).decode('utf-8') 
+            
+            # Open the image using PIL
+            image = Image.open(BytesIO(image_data))
 
-    return render_template('generate_qrcode.html', form=form)
+            # Adjust image quality and format
+            image = image.convert("RGB")  # Convert to RGB for better quality
+
+            # Create a BytesIO object to hold the modified image data
+            modified_image_data = BytesIO()
+            image.save(modified_image_data, format="JPEG", optimize=True)  # Save as JPEG with quality of 90%
+
+            # Resize the image to a specific width and height
+            image = image.resize((800, 600), resample=Image.LANCZOS)
+
+            # Reset the BytesIO object's position to the beginning
+            modified_image_data.seek(0)
+
+            # # Read the modified image data as bytes
+            encoded_image = base64.b64encode(modified_image_data.read()).decode('utf-8')
+                    
+            flash('QR code created','success')
+            return render_template("users/showQRCode.html", image=encoded_image)
+        else:
+            flash("Error occurred during QR code generation",'danger')
+            return redirect('/generate_qrcode')
+
+    return render_template('users/createQRCodeForm.html', form=form)
+
+
+################################### SAVE IMAGE TO DB ####################################################
+# @app.route('/saveImage',methods=['POST'])
+# def save_image():
+#     if "user_id" not in session:
+#         flash("Please login first!", "danger")
+#         return redirect('/login')
+    
+#     user = g.user
+
+#     form = ShowImageForm()
+
+#     if form.validate_on_submit():
+#        description = form.description.data
+
+#        db.session.add(description)
+#        db.session.commit()
+#        flash('SAVE QR CODE to your collection list','success')
+#        return redirect(f"/users/{user.id}")
+     
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
