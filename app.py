@@ -8,7 +8,7 @@ from secret import username_password , host_ip_port
 import base64
 from io import BytesIO
 from PIL import Image
-# import cairosvg
+
 
 
 
@@ -173,7 +173,7 @@ def generate_qrcode():
                 }
             },
             "image": {
-                "uri": "icon://bitcoin"
+                "uri": "icon://heart"
                 # "url": form.image
             },
             "output": {
