@@ -41,7 +41,10 @@
             </li>
           {% else %}
             <li class="nav-item">
-              <a class="nav-link mx-2 {% if active_page == 'generate' %} active {% endif %}" href="/generate_qrcode">Create QR</a>
+              <a class="nav-link mx-2 {% if active_page == 'collections' %} active {% endif %}" href="/users/{{g.user.id}}/collections">Your Collections</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link mx-2 {% if active_page == 'generate' %} active {% endif %}" href="/users/{{g.user.id}}/generate_qrcode">Create QR</a>
             </li>
             <li class="nav-item">
               <a class="nav-link mx-2 {% if active_page == 'logout' %} active {% endif %}" href="/logout">Logout</a>
@@ -54,14 +57,18 @@
   <!-- End Navigation bar -->
 
   <!-- Main -->
-  <div class="container" >
+  <!-- <div class="container" > -->
+  <main>
+    <div class="container">
     {% for category, message in get_flashed_messages(with_categories=True) %}
     <div class="alert alert-{{ category }}">{{ message }}</div>
     {% endfor %}
   
     {% block content %}
     {% endblock %}
-  </div>
+    </div>
+  </main>
+  <!-- </div> -->
   <!-- End Main -->
 
   <!-- ======= Footer ======= -->

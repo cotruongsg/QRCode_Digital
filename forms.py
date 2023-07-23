@@ -1,6 +1,6 @@
 """Forms for playlist app."""
 
-from wtforms import FileField , SelectField, StringField, FileField , IntegerField , BooleanField , PasswordField
+from wtforms import FileField , SelectField, StringField, FileField , IntegerField , BooleanField , PasswordField , TextAreaField
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField , FileAllowed
 from wtforms.validators import InputRequired , URL , Email , Length , ValidationError
@@ -78,13 +78,15 @@ class ColorOptionWidget:
 
 class QRCodeForm(FlaskForm):
     data = StringField('URL', validators=[InputRequired(), URL()])
+    name = StringField('Name of QR', validators=[InputRequired()])
+    description = TextAreaField('QR descriptions', validators=[InputRequired()])
     module_shape = SelectField('Module_Shapes', choices=[(module_shape,module_shape) for module_shape in module_shapes])
     module_color = SelectField('Module_Colors', choices=[], widget=ColorOptionWidget())
     inner_eye_shape = SelectField('Inner_Eye_Shapes', choices=[(shape,shape) for shape in inner_eye_shapes])
     inner_eye_color = SelectField('Inner_Eye_Colors', choices=[], widget=ColorOptionWidget())
     outer_eye_shape = SelectField('Outer_Eye_Shapes', choices=[(shape,shape) for shape in outer_eye_shapes])
     outer_eye_color = SelectField('Outer_Eye_Colors', choices=[], widget=ColorOptionWidget())
-    # image = FileField('Select Image', validators=[InputRequired()])
+ 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

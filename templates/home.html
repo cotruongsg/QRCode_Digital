@@ -23,7 +23,11 @@
           <div data-aos="fade-up" data-aos-delay="600">
             <div class="text-center text-lg-start">
               <button class="btn-get-started">
-                <a href="/signup"  class="scrollto d-inline-flex align-items-center justify-content-center align-self-center">
+              {% if not g.user %}
+                  <a href="/signup"  class="scrollto d-inline-flex align-items-center justify-content-center align-self-center">
+                  {% else %}   
+                  <a href="/users/{{g.user.id}}/generate_qrcode"  class="scrollto d-inline-flex align-items-center justify-content-center align-self-center">
+              {% endif %}    
                   <span>Get Started</span>
                   <i class="bi bi-arrow-right"></i>           
                 </a>

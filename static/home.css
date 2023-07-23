@@ -9,9 +9,9 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
-:root {
+/* :root {
   scroll-behavior: smooth;
-}
+} */
 
 body {
   font-family: "Open Sans", sans-serif;
@@ -42,7 +42,7 @@ h6 {
 --------------------------------------------------------------*/
 section {
   padding: 60px 0;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .section-header {

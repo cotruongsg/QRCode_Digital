@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<body>
+<section id="qrcollectionPage" class="vh-100 bg-image full-width-section">
+  <div class="container h-100">
+    <h3 class="mx-2">QR Collection lists</h3>
+  
+    <div class="d-flex flex-wrap">
+      {% if qrCodeImagesTB|length == image_id|length %}
+        {% for index in range(qrCodeImagesTB|length) %}
+          {% set image = qrCodeImagesTB[index] %}
+          {% set img_id = image_id[index] %}
+          <div class="card mx-2 my-2" style="width: 200px;">
+            <img src="data:image/jpeg;base64,{{ image.image_data }}" class="card-img-top" alt="QR Code">
+            <div class="card-body">
+              <h5 class="card-title">{{ image.name }}</h5>
+              <p class="card-text">{{ image.description }}</p>           
+              <div class="card-buttons">              
+                <a class="btn btn-primary btn-sm" href="/users/{{ user.id }}/collections/edit/{{ img_id[0] }}">Edit</a>
+                <form action="/users/{{ user.id }}/collections/delete/{{ img_id[0] }}" method="POST" style="display: inline;">
+                  <input type="hidden" name="_method" value="DELETE">
+                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>              
+              </div>           
+            </div>
+          </div>         
+          {% endfor %}
+        {% endif %}
+    </div>
+
+    <p><a class="btn btn-primary mx-2 my-3" href="/users/{{user.id}}/generate_qrcode">Create a QR Code</a></p>
+  </div>
+</section>
+</body>
+{% endblock %}
