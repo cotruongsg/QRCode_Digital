@@ -10,8 +10,8 @@ https://qrcode3.p.rapidapi.com/qrcode/text
 
 Technology Stack:
 
-Frontend: HTML5, CSS3, ES6, JavaScript
-Backend: Python, Flask, SQLAlchemy, Postgres
-Libraries & modules: WTForms, Bcrypt, requests, unittest
-Templating engine: Jinja
-Cloud service platform: Render , Github
+•	Frontend: HTML5, CSS3, ES6, JavaScript
+•	Backend: Python, Flask, SQLAlchemy, Postgres
+•	Libraries & modules: WTForms, Bcrypt, requests, unittest
+•	Templating engine: Jinja
+•	Cloud service platform: Render , Github
